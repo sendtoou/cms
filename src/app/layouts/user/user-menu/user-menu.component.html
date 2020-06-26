@@ -1,0 +1,20 @@
+
+<mat-nav-list>
+  <div class="profile-card">
+    <div class="header">
+      <h2>User naja</h2>
+      <h4>user@gmail.com</h4>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+
+  <h2 matSubheader>Pages</h2>
+
+  <div>
+    <a mat-list-item [routerLink]="['/user/overview']" routerLinkActive="list-item-active">Overview</a>
+    <a mat-list-item [routerLink]="['/user/case']" routerLinkActive="list-item-active">Case</a>
+    <a mat-list-item [routerLink]="['/user/suggest']" routerLinkActive="list-item-active">Suggest</a>
+  </div>
+
+</mat-nav-list>
+

@@ -1,0 +1,10 @@
+@import '../../../../assets/scss/config';
+
+mat-toolbar {
+  background: $darkblue;
+  color: $txtprimary;
+}
+
+ul li {
+  list-style: none;
+}

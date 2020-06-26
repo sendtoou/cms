@@ -1,8 +1,34 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
+import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
-
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'login', component: LoginComponent },
+  { path: 'accessdenied', component: AccessDeniedComponent },
+  { path: 'pagenotfound', component: PageNotFoundComponent },
+  {
+    path: 'admin',
+    loadChildren: () => import('./layouts/admin/admin.module').then(m => m.AdminModule),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { allowedRoles: ['admin', 'manager'] }
+  },
+  { path: 'user',
+    loadChildren: () => import('./layouts/user/user.module').then(m => m.UserModule),
+    canActivate: [AuthGuard, RoleGuard],
+    // canActivateChild: [RoleGuard],
+    data: { allowedRoles: ['user', 'member'] }
+  },
+  { path: '', redirectTo: '', pathMatch: 'full' }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

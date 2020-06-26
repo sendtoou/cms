@@ -1,0 +1,10 @@
+decode token
+npm install --save @types/jwt-decode
+npm install --save @auth0/angular-jwt
+npm install --save jwt-decode
+how to use:
+import * as decode from 'jwt-decode';
+app module:
+import { JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
+provider:
+{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS }, JwtHelperService
