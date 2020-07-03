@@ -4,7 +4,7 @@ const contentUrl = environment.contentUrl;
 
 export const apiUrl = {
   /* BASE_URL */
-  access_token: baseUrl + '/api/users/me/access-token',
+  token: baseUrl + '/api/token',
   login: baseUrl + '/api/login',
   register: baseUrl + '/api/register',
   user: baseUrl + '/api/user',

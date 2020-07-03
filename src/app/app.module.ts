@@ -18,6 +18,9 @@ import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { RegisterComponent } from './register/register.component';
+import { LandingComponent } from './landing/landing.component';
+import { PwdChangeComponent } from './pwd-change/pwd-change.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
     HomeComponent,
     LoginComponent,
     AccessDeniedComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    RegisterComponent,
+    LandingComponent,
+    PwdChangeComponent
   ],
   imports: [
     BrowserModule,

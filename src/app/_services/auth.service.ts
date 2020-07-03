@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, map, shareReplay } from 'rxjs/operators';
+import { tap, shareReplay } from 'rxjs/operators';
 import { apiUrl } from '../url.constant';
-import { TokenService } from './token.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import * as decode from 'jwt-decode';
 
@@ -17,8 +16,7 @@ export class AuthService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    public jwtHelper: JwtHelperService,
-    private tokenService: TokenService
+    public jwtHelper: JwtHelperService
   ) { }
 
   // getToken(): string {
@@ -90,35 +88,67 @@ export class AuthService {
       return false;
     }
     // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
-    const roleoftoken =  decodeToken['role'];
-    const roleofguard = allowedRoles;
-    const isInclude = roleoftoken.some((hasRole: any) => roleofguard.includes(hasRole));
+    const role = 'role';
+    const roleToken =  decodeToken[role];
+    const roleGuard = allowedRoles;
+    const isInclude = roleToken.some((hasRole: any) => roleGuard.includes(hasRole));
     return isInclude;
   }
 
   login(loginValue: any) {
-    return this.http.post<any>(apiUrl.login, loginValue)
+    return this.http.post<any>(apiUrl.login, loginValue, {observe: 'response'})
     .pipe(
       shareReplay(),
       tap(res => {
-        localStorage.setItem('x-access-token', res.token);
+        this.setSessionToken(res.headers.get('x-access-token'), res.headers.get('x-refresh-token'));
+        this.router.navigate(['/home']);
+      })
+    );
+  }
+
+  register(registerValue: any) {
+    return this.http.post<any>(apiUrl.register, registerValue, {observe: 'response'})
+    .pipe(
+      shareReplay(),
+      tap((res: HttpResponse<any>) => {
+        this.setSessionToken(res.headers.get('x-access-token'), res.headers.get('x-refresh-token'));
+        this.router.navigate(['/home']);
+      })
+    );
+  }
+
+  getNewAccessToken() {
+    return this.http.get<any>(apiUrl.token, {headers: {'x-refresh-token': this.getRefreshToken()}, observe: 'response'})
+      .pipe(
+        tap((res: HttpResponse<any>) => {
+        this.setAccessToken(res.headers.get('x-access-token'));
       })
     );
   }
 
   logout() {
-    this.removeSession();
-    this.router.navigate(['/login']);
+    this.removeSessionToken();
+    this.router.navigate(['/landing']);
   }
 
-  private setSession(token: string) {
-    // localStorage.setItem('id', userId);
+  getAccessToken() {
+    return localStorage.getItem('x-access-token');
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem('x-refresh-token');
+  }
+
+  setAccessToken(token: string) {
     localStorage.setItem('x-access-token', token);
-    // localStorage.setItem('x-refresh-token', refreshToken);
   }
 
-  private removeSession() {
-    localStorage.removeItem('id');
+  private setSessionToken(token: string, refreshToken: string) {
+    localStorage.setItem('x-access-token', token);
+    localStorage.setItem('x-refresh-token', refreshToken);
+  }
+
+  private removeSessionToken() {
     localStorage.removeItem('x-access-token');
     localStorage.removeItem('x-refresh-token');
   }

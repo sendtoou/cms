@@ -6,13 +6,14 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { RegisterComponent } from './register/register.component';
+import { LandingComponent } from './landing/landing.component';
 
 const routes: Routes = [
-  { path: '',
-    component: HomeComponent,
-    canActivate: [AuthGuard],
-  },
+  { path: '', component: LandingComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'accessdenied', component: AccessDeniedComponent },
   { path: 'pagenotfound', component: PageNotFoundComponent },
   {

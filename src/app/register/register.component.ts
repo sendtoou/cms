@@ -1,46 +1,37 @@
 import { Component, OnInit } from '@angular/core';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../_services/auth.service';
 import { HttpResponse } from '@angular/common/http';
 import * as decode from 'jwt-decode';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+export class RegisterComponent implements OnInit {
+  registerForm: FormGroup;
   loading = false;
   errorMessage = '';
   roles: string[] = [];
 
   constructor(
-    private formBuilder: FormBuilder,
+    private fromBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService
-  ) {
-    // redirect to home if already logged in
-    // if (this.authService.login) {
-    //   this.router.navigate(['/']);
-    // }
-  }
+    ) { }
 
   ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
+    this.registerForm = this.fromBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
-  // convenience getter for easy access to form fields
-  // get f() { return this.loginForm.controls; }
-
-
   onSubmit(value: any) {
     this.loading = true;
-    this.authService.login(value).subscribe((res: HttpResponse<any>) => {
+    this.authService.register(value).subscribe((res: HttpResponse<any>) => {
       const token = res.body.token;
       const decodeToken = decode(token);
       if (!decodeToken) {
@@ -62,10 +53,11 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
       }
     }, error => {
-      console.log('resError:', error);
-      // this.errorMessage = error.error.message;
-      this.errorMessage = error;
-      this.loading = false;
-    });
+        console.log('resError:', error);
+        // this.errorMessage = error.error.message;
+        this.errorMessage = error;
+        this.loading = false;
+      }
+    );
   }
 }

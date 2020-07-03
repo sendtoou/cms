@@ -1,0 +1,18 @@
+<form class="container" [formGroup]="pwdChageForm">
+  <label for="current">Current Password</label>
+  <input id="current" formControlName="current" type="password" required><br />
+
+  <label for="newPW">New Password</label>
+  <input id="newPW" formControlName="newPW" type="password" required><br/>
+  <!-- <div *ngIf="newPW.touched && newPW.newIsNotOld">
+      New password can't be the same as current password.
+  </div> -->
+
+  <label for="confirm">Confirm new password</label>
+  <input id="confirm" formControlName="confirm" type="password" required><br />
+  <!-- <div *ngIf="confirm.touched && confirm.errors.newMatchesConfirm">
+      The confirmation does not match.
+  </div> -->
+
+  <button type="submit">Submit</button>
+</form>
