@@ -10,8 +10,7 @@ export class PwdChangeComponent implements OnInit {
   pwdChageForm: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     // this.pwdChageForm = this.formBuilder.group({

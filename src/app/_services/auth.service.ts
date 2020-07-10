@@ -16,16 +16,7 @@ export class AuthService {
   constructor(
     private router: Router,
     private http: HttpClient,
-    public jwtHelper: JwtHelperService
-  ) { }
-
-  // getToken(): string {
-  //   return localStorage.getItem('x-access-token');
-  // }
-
-  // setToken(token: string): void {
-  //   localStorage.setItem('x-access-token', token);
-  // }
+    public jwtHelper: JwtHelperService) { }
 
   // getTokenExpirationDate(token: string): Date {
   //   const decoded = decode(token);
@@ -66,14 +57,16 @@ export class AuthService {
   //   );
   // }
 
-  isAuthenticated(): boolean {
+  isAccessTokenExpired(): boolean {
     const token = localStorage.getItem('x-access-token');
-    // return !!this.jwtHelper.isTokenExpired(token);
-    // check expire token for prevent fake token
     const isExpired = this.jwtHelper.isTokenExpired(token);
-    if (token && !isExpired) {
+    if (token && isExpired) {
         return true;
     }
+  }
+
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('x-access-token');
   }
 
   isRolesAuthorized(allowedRoles: string[]): boolean {
@@ -81,17 +74,18 @@ export class AuthService {
     if (allowedRoles == null || allowedRoles.length === 0) {
       return true;
     }
-    const token = localStorage.getItem('x-access-token');
-    const decodeToken = decode(token);
-    if (!decodeToken) {
-      console.log('Invalid token');
-      return false;
-    }
+    // const token = localStorage.getItem('x-access-token');
+    // const decodeToken = decode(token);
+    // if (!decodeToken) {
+    //   console.log('Invalid token');
+    //   return false;
+    // }
+    // const role = 'role';
+    // const roleToken =  decodeToken[role];
     // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
-    const role = 'role';
-    const roleToken =  decodeToken[role];
+    const userRole = this.getUserRole();
     const roleGuard = allowedRoles;
-    const isInclude = roleToken.some((hasRole: any) => roleGuard.includes(hasRole));
+    const isInclude = userRole.some((hasRole: any) => roleGuard.includes(hasRole));
     return isInclude;
   }
 
@@ -117,18 +111,43 @@ export class AuthService {
     );
   }
 
+  logout() {
+    this.removeSessionToken();
+    this.router.navigate(['']); // landing page
+  }
+
+  clearSessionToken() {
+    this.removeSessionToken();
+  }
+
+  getUserId() {
+    const token = localStorage.getItem('x-access-token');
+    const decodeToken = decode(token);
+    const uid = 'uid';
+    const userId =  decodeToken[uid];
+    return userId;
+  }
+
+  getUserRole() {
+    const token = localStorage.getItem('x-access-token');
+    const decodeToken = decode(token);
+    // if (!decodeToken) {
+    //   console.log('Invalid token');
+    //   return false;
+    // }
+    const role = 'role';
+    const userRole = decodeToken[role];
+    return userRole;
+  }
+
   getNewAccessToken() {
-    return this.http.get<any>(apiUrl.token, {headers: {'x-refresh-token': this.getRefreshToken()}, observe: 'response'})
+    return this.http.get<any>(apiUrl.token, {
+      headers: {'x-refresh-token': this.getRefreshToken()}, observe: 'response'})
       .pipe(
         tap((res: HttpResponse<any>) => {
         this.setAccessToken(res.headers.get('x-access-token'));
       })
     );
-  }
-
-  logout() {
-    this.removeSessionToken();
-    this.router.navigate(['/landing']);
   }
 
   getAccessToken() {

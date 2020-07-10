@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../_services/auth.service';
+import { AuthService } from '../../_services/auth.service';
 import { HttpResponse } from '@angular/common/http';
 import * as decode from 'jwt-decode';
 
@@ -19,8 +19,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
-  ) {
+    private authService: AuthService) {
     // redirect to home if already logged in
     // if (this.authService.login) {
     //   this.router.navigate(['/']);

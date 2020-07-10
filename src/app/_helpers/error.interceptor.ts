@@ -3,13 +3,25 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { catchError, retry, shareReplay } from 'rxjs/operators';
+import { AuthService } from '../_services/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+  //   return next.handle(req).pipe(catchError(err => {
+  //     const error = err.error.message || err.statusText;
+  //     return throwError(error);
+  // }));
+
+
+
+
     // return next.handle(req)
     // .pipe(
     //   retry(1),
@@ -19,7 +31,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     //           // client-side error
     //           errorMessage = `Error: ${error.error.message}`;
     //       } else {
-    //           // server-side error
+    //           // server-side(backend) error
     //           errorMessage = `Error Status: ${error.status}\nMessage: ${error.message}`;
     //       }
     //       console.log(errorMessage);
@@ -48,10 +60,12 @@ export class ErrorInterceptor implements HttpInterceptor {
               errorMessage = errorHttpMessage + ' resCode:' + error.error.resCode + ' resMessage:' + error.error.resMessage;
               switch (error.status) {
                 case 401:      // unauthorized
+                this.authService.clearSessionToken();
                 this.router.navigate(['/login']);
                 console.log('Unauthorized redirect to login');
                 break;
                 case 403:     // forbidden
+                this.authService.clearSessionToken();
                 this.router.navigate(['/login']);
                 console.log('Forbidden redirect to login');
                 break;
@@ -65,5 +79,6 @@ export class ErrorInterceptor implements HttpInterceptor {
         return throwError(error);
       })
     );
+
   }
 }

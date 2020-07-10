@@ -17,8 +17,8 @@ export class UserService {
 //   getCampageUrl(uuid){
 //     return environment.apiUrl + '/campaign/'+uuid+'/activation/';
 //  }
-  getById(id: number) {
-    // return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
-    return this.http.get<User>(apiUrl.user + id );
+  getById(id: string) {
+    // return this.http.get<User>(`${apiUrl.user}/${id}`);
+    return this.http.get<User>(apiUrl.user + '/' + id );
   }
 }
